@@ -1,0 +1,24 @@
+on:
+    workflow_call:
+        inputs:
+            project:
+                description: 'The (internal) name for this project, as defined within the MontiVerse job'
+                type: string
+                required: true
+            branch:
+                description: 'The branch to use for building the MontiVerse, such as head.ref'
+                type: string
+                required: true
+            repo:
+                description: 'The project path to use for building the MontiVerse, such as head.repo.full_name'
+                type: string
+                required: true
+
+
+jobs:
+    # Run the MontiVerse pipeline (tests this change on a suite of projects)
+    trigger-montiverse:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Trigger MontiVerse
+            run: echo Hello for ${{ inputs.project }} ${{ inputs.branch }} ${{ inputs.repo }}

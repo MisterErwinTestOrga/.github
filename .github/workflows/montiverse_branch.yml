@@ -1,0 +1,37 @@
+on:
+    workflow_call:
+        inputs:
+            project:
+                description: 'The (internal) name for this project, as defined within the MontiVerse job'
+                type: string
+                required: true
+            branch:
+                description: 'The branch to use for building the MontiVerse, such as head.ref'
+                type: string
+                required: true
+            repo:
+                description: 'The project path to use for building the MontiVerse, such as head.repo.full_name'
+                type: string
+                required: true
+        secrets:
+            MONTIVERSE_TRIGGER_TOKEN:
+                required: true
+            MONTIVERSE_ACCESS_TOKEN:
+                required: true
+
+
+jobs:
+    # Run the MontiVerse pipeline (tests this change on a suite of projects)
+    trigger-montiverse:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Trigger MontiVerse
+            uses: digital-blueprint/gitlab-pipeline-trigger-action@v1
+            with:
+              host: 'git.rwth-aachen.de'
+              trigger_token: ${{ secrets.MONTIVERSE_TRIGGER_TOKEN }}
+              access_token: ${{ secrets.MONTIVERSE_ACCESS_TOKEN }}  # Access is required to show the status
+              id: '91803'  # montiverseci project id
+              ref: 'main'
+              # TODO: Include entire git path here instead (due to PRs)
+              variables: '{"${{inputs.project}}_BRANCH":"${{inputs.branch}}", "${{inputs.project}}_PROJECT":"${{ inputs.repo }}"}'
