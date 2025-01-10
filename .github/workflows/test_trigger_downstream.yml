@@ -1,0 +1,25 @@
+on:
+    workflow_call:
+        inputs:
+            projects:
+                description: 'The JSON-projects to trigger'
+                type: string
+                required: true
+        secrets:
+            DOWNSTREAM_PAT:
+                required: true
+
+jobs:
+    # Run the MontiVerse pipeline (tests this change on a suite of projects)
+    trigger-github-downstream:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+            project:  ${{ fromJSON(inputs.projects) }}
+      steps:
+        - name: Trigger ${{ matrix.project }}
+          uses: peter-evans/repository-dispatch@v3
+          with:
+            token: ${{ secrets.DOWNSTREAM_PAT }}
+            repository: ${{ matrix.project }}
+            event-type: trigger_after_upstream_deploy
