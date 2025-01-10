@@ -1,0 +1,5 @@
+{
+    "name": "Deploy Default WorkFlow",
+    "description": "Deploy this Monti project to the nexus.",
+    "iconName": "octicon package"
+}
