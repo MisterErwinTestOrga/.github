@@ -13,6 +13,11 @@ on:
 
 jobs:
     # Run the MontiVerse pipeline (tests this change on a suite of projects)
+    a:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Test
+          run: echo ${{inputs.projects}}
     trigger-github-downstream:
       runs-on: ubuntu-latest
       strategy:
