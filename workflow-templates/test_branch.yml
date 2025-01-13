@@ -30,6 +30,7 @@ jobs:
     # Run the MontiVerse pipeline (tests this change on a suite of projects)
     trigger-montiverse:
       uses: MisterErwinTestOrga/.github/.github/workflows/montiverse_branch.yml@main
+      needs: [a]
       with:
         project: "MONTICORE"
         branch: github.event.push.ref
