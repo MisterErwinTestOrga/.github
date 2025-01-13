@@ -25,8 +25,7 @@ jobs:
       runs-on: ubuntu-latest
       strategy:
         matrix:
-            #project:  ${{ fromJSON(inputs.projects) }}
-            project:  ${{ fromJSON('["MontiCore/cd4analysis"]') }}
+            project:  ${{ fromJSON(inputs.projects) }}
 
       steps:
         - name: Trigger ${{ matrix.project }}
