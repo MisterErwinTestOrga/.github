@@ -21,4 +21,4 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - name: Trigger MontiVerse
-            run: echo Hello for ${{ github.event.push.ref }}  ${{ github.event.repository.full_name }} ${{ inputs.branch }} ${{ inputs.repo }}
+            run: echo Hello for ${{ github.event.push.ref }} - ${{ github.event.repository.full_name }} - ${{ inputs.branch }} - ${{ inputs.repo }}
