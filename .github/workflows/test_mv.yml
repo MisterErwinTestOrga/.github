@@ -20,5 +20,7 @@ jobs:
     trigger-montiverse:
         runs-on: ubuntu-latest
         steps:
+          - name: Extract branchname
+            run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
           - name: Trigger MontiVerse
-            run: echo Hello for ${{github.event.ref#refs/heads/}} - ${{ github.event.repository.full_name }} - ${{ inputs.branch }} - ${{ inputs.repo }}
+            run: echo Hello for ${{env.BRANCH_NAME}} - ${{ github.event.repository.full_name }} - ${{ inputs.branch }} - ${{ inputs.repo }}
