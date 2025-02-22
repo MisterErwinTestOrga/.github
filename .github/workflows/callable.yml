@@ -60,8 +60,9 @@ jobs:
           body-includes: Build output
           token: ${{secrets.comment_personal_access_token}}
     
-      - name: Create or update comment
+      - name: Create or update PR comment
         uses: peter-evans/create-or-update-comment@v4
+        if: ${{  github.event.pull_request.number || steps.related_pr.outputs.nodeId }}
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.nodeId }}
