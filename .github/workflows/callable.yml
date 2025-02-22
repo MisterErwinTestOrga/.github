@@ -8,14 +8,17 @@ on:
         description: "A(n) input"
         type: string
         required: false
+    secrets:
+      comment_personal_access_token:
+        required: true
 
 jobs:
   test_job:
     runs-on: ubuntu-latest
     name: A test job
-    permissions:
-      contents: write
-      pull-requests: write
+    #permissions:
+      #contents: write
+      #pull-requests: write
     steps:
       - name: A
         run: echo "inputs ${{ inputs }}"
@@ -45,6 +48,7 @@ jobs:
         uses: peter-evans/commit-comment@v3
         with:
           body: "Could not find PR?"
+          token: ${{secrets.comment_personal_access_token}}
       
       - name: Find Comment
         uses: peter-evans/find-comment@v3
@@ -54,6 +58,7 @@ jobs:
           issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.nodeId }}
           comment-author: 'github-actions[bot]'
           body-includes: Build output
+          token: ${{secrets.comment_personal_access_token}}
     
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v4
@@ -64,4 +69,5 @@ jobs:
             Build output
             HELLO THERE
           edit-mode: replace
+          token: ${{secrets.comment_personal_access_token}}
     
