@@ -15,8 +15,8 @@ jobs:
     name: A test job
     steps:
       - name: A
-        run: echo "inputs: ${{ inputs }}"
+        run: echo "inputs ${{ inputs }}"
       - name: PG
-        run: echo "github.sha: ${{ github.sha }}"
+        run: echo "github.sha ${{ github.sha }}"
       - name: P
-        run: echo "pull_request: ${{ github.event.pull_request.number }}"
+        run: echo "pull_request ${{ github.event.pull_request.number }}"
