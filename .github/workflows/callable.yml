@@ -35,17 +35,7 @@ jobs:
           commit_sha: ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - 
-        if: ${{ ! github.event.pull_request.number }}
-        run: "echo latest release: '${{ steps.get_related_pr.outputs.data }}'"    
-      - 
-        if: ${{ ! github.event.pull_request.number }}
-        run: "echo number '${{ fromJson(steps.get_related_pr.outputs.data)[0] }}'"  
-      - 
-        if: ${{ ! github.event.pull_request.number }}
-        run: "echo number '${{ fromJson(steps.get_related_pr.outputs.data)[0].number }}'"
-      - 
-        id: related_pr
+      - id: related_pr
         if: ${{ ! github.event.pull_request.number }}
         run: echo "number=${{ fromJson(steps.get_related_pr.outputs.data)[0].number }}" >> $GITHUB_OUTPUT
 
@@ -54,7 +44,6 @@ jobs:
         uses: peter-evans/commit-comment@v3
         with:
           body: "Could not find PR?"
-          #token: ${{secrets.comment_personal_access_token}}
       
       - name: Find Comment
         uses: peter-evans/find-comment@v3
@@ -64,7 +53,6 @@ jobs:
           issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
           comment-author: 'github-actions[bot]'
           body-includes: Build output
-          #token: ${{secrets.comment_personal_access_token}}
     
       - name: Create or update PR comment
         uses: peter-evans/create-or-update-comment@v4
@@ -73,8 +61,7 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
           body: |
-            Build output
+            <!--Build output-->
             HELLO THERE
           edit-mode: replace
-          #token: ${{secrets.comment_personal_access_token}}
     
