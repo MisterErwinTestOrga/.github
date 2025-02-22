@@ -47,7 +47,7 @@ jobs:
       - 
         id: related_pr
         if: ${{ ! github.event.pull_request.number }}
-        run: echo "number=${{ fromJson(steps.get_related_pr.outputs.data)[0].id }}" >> $GITHUB_OUTPUT
+        run: echo "number=${{ fromJson(steps.get_related_pr.outputs.data)[0].number }}" >> $GITHUB_OUTPUT
 
       - name: Create commit comment
         if: ${{ ! github.event.pull_request.number && !steps.related_pr.outputs.number }}
