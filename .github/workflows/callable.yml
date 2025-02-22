@@ -13,6 +13,9 @@ jobs:
   test_job:
     runs-on: ubuntu-latest
     name: A test job
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: A
         run: echo "inputs ${{ inputs }}"
@@ -20,3 +23,45 @@ jobs:
         run: echo "github.sha ${{ github.sha }}"
       - name: P
         run: echo "pull_request ${{ github.event.pull_request.number }}"
+      - uses: octokit/request-action@v2.x
+        if: ${{ ! github.event.pull_request.number }}
+        id: get_related_pr
+        with:
+          route: GET /repos/{ownerandrepo}/commits/{commit_sha}/pulls
+          ownerandrepo: ${{ github.repository }}
+          commit_sha: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - 
+        if: ${{ ! github.event.pull_request.number }}
+        run: "echo latest release: '${{ fromJson(steps.get_related_pr.outputs.data)[0].nodeId }}'"
+      - 
+        id: related_pr
+        if: ${{ ! github.event.pull_request.number }}
+        run: echo "nodeId=${{ fromJson(steps.get_related_pr.outputs.data)[0].nodeId }}" >> $GITHUB_OUTPUT
+
+      - name: Create commit comment
+        if: ${{ ! github.event.pull_request.number && !steps.related_pr.outputs.nodeId }}
+        uses: peter-evans/commit-comment@v3
+        with:
+          body: "Could not find PR?"
+      
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        if: ${{  github.event.pull_request.number || steps.related_pr.outputs.nodeId }}
+        id: fc
+        with:
+          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.nodeId }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Build output
+    
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.nodeId }}
+          body: |
+            Build output
+            HELLO THERE
+          edit-mode: replace
+    
