@@ -37,7 +37,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - 
         if: ${{ ! github.event.pull_request.number }}
-        run: "echo latest release: '${{ fromJson(steps.get_related_pr.outputs.data)[0].nodeId }}'"
+        run: "echo latest release: '${{ steps.get_related_pr.outputs.data }}'"    
+      - 
+        if: ${{ ! github.event.pull_request.number }}
+        run: "nodeId: '${{ fromJson(steps.get_related_pr.outputs.data)[0].nodeId }}'"
       - 
         id: related_pr
         if: ${{ ! github.event.pull_request.number }}
