@@ -40,17 +40,17 @@ jobs:
         run: "echo latest release: '${{ steps.get_related_pr.outputs.data }}'"    
       - 
         if: ${{ ! github.event.pull_request.number }}
-        run: "echo prId '${{ fromJson(steps.get_related_pr.outputs.data)[0] }}'"  
+        run: "echo number '${{ fromJson(steps.get_related_pr.outputs.data)[0] }}'"  
       - 
         if: ${{ ! github.event.pull_request.number }}
-        run: "echo prId '${{ fromJson(steps.get_related_pr.outputs.data)[0].id }}'"
+        run: "echo number '${{ fromJson(steps.get_related_pr.outputs.data)[0].number }}'"
       - 
         id: related_pr
         if: ${{ ! github.event.pull_request.number }}
-        run: echo "prId=${{ fromJson(steps.get_related_pr.outputs.data)[0].id }}" >> $GITHUB_OUTPUT
+        run: echo "number=${{ fromJson(steps.get_related_pr.outputs.data)[0].id }}" >> $GITHUB_OUTPUT
 
       - name: Create commit comment
-        if: ${{ ! github.event.pull_request.number && !steps.related_pr.outputs.prId }}
+        if: ${{ ! github.event.pull_request.number && !steps.related_pr.outputs.number }}
         uses: peter-evans/commit-comment@v3
         with:
           body: "Could not find PR?"
@@ -58,20 +58,20 @@ jobs:
       
       - name: Find Comment
         uses: peter-evans/find-comment@v3
-        if: ${{  github.event.pull_request.number || steps.related_pr.outputs.prId }}
+        if: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
         id: fc
         with:
-          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.prId }}
+          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
           comment-author: 'github-actions[bot]'
           body-includes: Build output
           token: ${{secrets.comment_personal_access_token}}
     
       - name: Create or update PR comment
         uses: peter-evans/create-or-update-comment@v4
-        if: ${{  github.event.pull_request.number || steps.related_pr.outputs.prId }}
+        if: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.prId }}
+          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
           body: |
             Build output
             HELLO THERE
