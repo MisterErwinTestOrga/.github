@@ -40,11 +40,14 @@ jobs:
         run: "echo latest release: '${{ steps.get_related_pr.outputs.data }}'"    
       - 
         if: ${{ ! github.event.pull_request.number }}
-        run: "nodeId: '${{ fromJson(steps.get_related_pr.outputs.data)[0].nodeId }}'"
+        run: "echo nodeId '${{ fromJson(steps.get_related_pr.outputs.data)[0] }}'"  
+      - 
+        if: ${{ ! github.event.pull_request.number }}
+        run: "echo nodeId '${{ fromJson(steps.get_related_pr.outputs.data)[0].node_id }}'"
       - 
         id: related_pr
         if: ${{ ! github.event.pull_request.number }}
-        run: echo "nodeId=${{ fromJson(steps.get_related_pr.outputs.data)[0].nodeId }}" >> $GITHUB_OUTPUT
+        run: echo "nodeId=${{ fromJson(steps.get_related_pr.outputs.data)[0].node_id }}" >> $GITHUB_OUTPUT
 
       - name: Create commit comment
         if: ${{ ! github.event.pull_request.number && !steps.related_pr.outputs.nodeId }}
